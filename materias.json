@@ -30,7 +30,7 @@
   ["M33580", "Fundamentos de Redes de Telecomunicaciones", 3, "Telecomunicaciones", 5],
   ["M33579", "Medios de Transmisión", 3, "Telecomunicaciones", 5, ["Campos"]],
   ["M33578", "Microcontroladores", 3, "Electrónica", 5, ["Circuitos Digitales"]],
-  ["M33581", "Modelado y Bases de Datos", 3, "Software", 5, "Algoritmos Computacionales"],
+  ["M33581", "Modelado y Bases de Datos", 3, "Software", 5, ["Algoritmos Computacionales"]],
   ["M33577", "Probabilidad y Estadística", 3, "Matemáticas", 5, ["Cálculo Vectorial"]],
   ["M33576", "Procesamiento Digital de Señales PDS", 3, "Telecomunicaciones", 5, ["Señales y Sistemas"]],
 
