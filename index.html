@@ -112,13 +112,15 @@
 
       const porSemestre = {};
       materias.forEach(m => {
-        if (!porSemestre[m.semestre]) porSemestre[m.semestre] = [];
-        porSemestre[m.semestre].push(m);
+        const sem = Number(m.semestre);
+        if (!porSemestre[sem]) porSemestre[sem] = [];
+        porSemestre[sem].push(m);
       });
 
       const ordenados = Object.keys(porSemestre)
-        .map(Number)             // convertir a número real
-        .sort((a, b) => a - b);  // ordenar correctamente
+        .map(Number)
+        .sort((a, b) => a - b);
+
       ordenados.forEach(sem => {
         const col = document.createElement('div');
         col.className = 'semestre';
