@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ingeniería Electrónica y Telecomunicaciones</title>
+  <title>Malla Interactiva - Electrónica y Telecomunicaciones</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -14,7 +14,7 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .grid {
@@ -34,29 +34,62 @@
 
     .semestre h3 {
       text-align: center;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
 
     .materia {
+      position: relative;
       background: #e0f2fe;
-      border-left: 5px solid #3b82f6;
       border-radius: 8px;
-      padding: 0.75rem;
-      margin-bottom: 0.6rem;
+      padding: 1.5rem 0.75rem 1.25rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .materia strong {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-size: 0.95rem;
-      color: #1e293b;
+    .materia[data-bloqueada="true"]::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 3;
+      border-radius: 8px;
     }
 
-    .materia small {
-      display: block;
-      font-size: 0.75rem;
-      color: #475569;
+    .materia[data-aprobada="true"]::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 141%;
+      height: 2px;
+      background-color: #0f172a;
+      transform: rotate(45deg);
+      transform-origin: top left;
+      z-index: 4;
+    }
+
+    .codigo, .numero, .creditos {
+      position: absolute;
+      font-size: 0.7rem;
+      font-weight: bold;
+      background: #3b82f6;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      z-index: 4;
+    }
+
+    .codigo { top: 4px; left: 4px; }
+    .numero { top: 4px; right: 4px; }
+    .creditos { bottom: 4px; right: 4px; }
+
+    .nombre {
+      text-align: center;
+      z-index: 2;
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -67,27 +100,26 @@
 
       .semestre {
         background: #1e1e1e;
-        box-shadow: none;
       }
 
       .materia {
         background: #1d4ed8;
-        border-left-color: #60a5fa;
       }
 
-      .materia strong {
-        color: #ffffff;
+      .codigo, .numero, .creditos {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
       }
 
-      .materia small {
-        color: #cbd5e1;
+      .nombre {
+        color: #fff;
       }
     }
   </style>
 </head>
 <body>
   <h1>Malla Interactiva - Ingeniería Electrónica y Telecomunicaciones</h1>
-  <div id="malla-original" class="grid"></div>
+  <div id="malla" class="grid"></div>
 
   <script>
     fetch('materias.json')
@@ -102,14 +134,11 @@
           semestre: arr[4],
           prerequisitos: arr[5] || []
         }));
-
-        renderizarMalla(materias, 'malla-original');
+        renderizarMalla(materias);
       });
 
-    function renderizarMalla(materias, contenedorId) {
-      const contenedor = document.getElementById(contenedorId);
-      contenedor.innerHTML = "";
-
+    function renderizarMalla(materias) {
+      const contenedor = document.getElementById('malla');
       const porSemestre = {};
       materias.forEach(m => {
         const sem = Number(m.semestre);
@@ -117,10 +146,7 @@
         porSemestre[sem].push(m);
       });
 
-      const ordenados = Object.keys(porSemestre)
-        .map(Number)
-        .sort((a, b) => a - b);
-
+      const ordenados = Object.keys(porSemestre).map(Number).sort((a, b) => a - b);
       ordenados.forEach(sem => {
         const col = document.createElement('div');
         col.className = 'semestre';
@@ -129,17 +155,58 @@
         porSemestre[sem].forEach(m => {
           const div = document.createElement('div');
           div.className = 'materia';
+          div.dataset.nombre = m.nombre;
+          if (m.prerequisitos.length) div.dataset.bloqueada = true;
+
           div.innerHTML = `
-            <strong>${m.numero}. ${m.nombre}</strong>
-            <small>Código: ${m.codigo}</small>
-            <small>Créditos: ${m.creditos}</small>
-            <small>Área: ${m.area}</small>
-            ${m.prerequisitos.length ? `<small>Prerrequisitos: ${m.prerequisitos.join(', ')}</small>` : ''}
+            <div class="codigo">${m.codigo}</div>
+            <div class="numero">${m.numero}</div>
+            <div class="creditos">${m.creditos}</div>
+            <div class="nombre">${m.nombre}</div>
           `;
+
+          div.addEventListener('click', () => alternarEstado(m, div, materias));
           col.appendChild(div);
         });
 
         contenedor.appendChild(col);
+      });
+    }
+
+    function alternarEstado(materia, el, todas) {
+      if (el.dataset.bloqueada === 'true') return;
+
+      const aprobada = el.dataset.aprobada === 'true';
+      if (aprobada) {
+        delete el.dataset.aprobada;
+        bloquearDependientes(materia, todas);
+      } else {
+        el.dataset.aprobada = true;
+        desbloquearDependientes(materia, todas);
+      }
+    }
+
+    function desbloquearDependientes(aprobada, materias) {
+      materias.forEach(m => {
+        if (m.prerequisitos.includes(aprobada.nombre)) {
+          const matEl = document.querySelector(`.materia[data-nombre='${m.nombre}']`);
+          const listos = m.prerequisitos.every(pr => {
+            const el = document.querySelector(`.materia[data-nombre='${pr}']`);
+            return el && el.dataset.aprobada === 'true';
+          });
+          if (listos) delete matEl.dataset.bloqueada;
+        }
+      });
+    }
+
+    function bloquearDependientes(removida, materias) {
+      materias.forEach(m => {
+        if (m.prerequisitos.includes(removida.nombre)) {
+          const matEl = document.querySelector(`.materia[data-nombre='${m.nombre}']`);
+          matEl.dataset.bloqueada = true;
+          delete matEl.dataset.aprobada;
+          bloquearDependientes(m, materias);
+        }
       });
     }
   </script>
