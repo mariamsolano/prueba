@@ -116,7 +116,9 @@
         porSemestre[m.semestre].push(m);
       });
 
-      const ordenados = Object.keys(porSemestre).sort((a, b) => a - b);
+      const ordenados = Object.keys(porSemestre)
+        .map(Number)             // convertir a número real
+        .sort((a, b) => a - b);  // ordenar correctamente
       ordenados.forEach(sem => {
         const col = document.createElement('div');
         col.className = 'semestre';
