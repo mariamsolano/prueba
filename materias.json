@@ -36,7 +36,7 @@
 
   ["M33582", "Circuitos de RF", 3, "Electrónica", 6, ["Circuitos Analógicos"]],
   ["M33583", "Comunicaciones Analógicas", 3, "Telecomunicaciones", 6, ["Probabilidad y Estadística", "Procesamiento Digital de Señales PDS"]],
-  ["M33585", "Comunicaciones Digitales", 3, "Telecomunicaciones", 6], ["Probabilidad y Estadística", "Señales y Sistemas"],
+  ["M33585", "Comunicaciones Digitales", 3, "Telecomunicaciones", 6], ["Probabilidad y Estadística", "Señales y Sistemas"]],
   ["M33586", "Informática para Telecomunicaciones", 3, "Software", 6, ["Algoritmos Computacionales"]],
   ["M33584", "Metodología de la Investigación", 3, "Humanísticas", 6],
   ["SCONMU", "Sistemas de Conmutación", 3, "Telecomunicaciones", 6, ["Fundamentos de Redes de Telecomunicaciones"]],
