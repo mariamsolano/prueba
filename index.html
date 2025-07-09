@@ -3,225 +3,212 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Malla Editable - Ingeniería Electrónica y Telecomunicaciones</title>
+  <title>Malla Interactiva - Electrónica y Telecomunicaciones</title>
   <style>
-    :root {
-      --bg-light: #eef1f5;
-      --bg-dark: #121212;
-      --text-light: #222;
-      --text-dark: #e0e0e0;
-      --card-light: #fff;
-      --card-dark: #1e1e1e;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: var(--bg-dark);
-        --text: var(--text-dark);
-        --card: var(--card-dark);
-      }
-    }
-    @media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
-      :root {
-        --bg: var(--bg-light);
-        --text: var(--text-light);
-        --card: var(--card-light);
-      }
-    }
     body {
-      background: var(--bg);
-      color: var(--text);
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 2rem;
+      background: #f0f2f5;
     }
+
     h1 {
       text-align: center;
+      margin-bottom: 2rem;
     }
+
     .grid {
       display: flex;
       gap: 1rem;
       overflow-x: auto;
     }
+
     .semestre {
-      background: var(--card);
+      background: #fff;
       padding: 1rem;
       border-radius: 12px;
-      min-width: 250px;
+      min-width: 240px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      flex-shrink: 0;
     }
+
     .semestre h3 {
       text-align: center;
       margin-bottom: 1rem;
     }
+
     .materia {
       position: relative;
-      border: 1px solid #888;
-      border-radius: 10px;
-      padding: 1.5rem 0.75rem 1rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.85rem;
-      max-width: 200px;
-      width: 100%;
+      background: #e0f2fe;
+      border-radius: 8px;
+      padding: 1.5rem 0.75rem 1.25rem;
+      margin-bottom: 0.75rem;
       cursor: pointer;
-      overflow: hidden;
       transition: all 0.3s ease;
-    }
-
-    .materia[data-categoria="Matemáticas"]         { background: color-mix(in srgb, #a1c4fd 60%, var(--card)); }
-    .materia[data-categoria="Física"]              { background: color-mix(in srgb, #d3bfff 60%, var(--card)); }
-    .materia[data-categoria="Humanísticas"]        { background: color-mix(in srgb, #ffc6ff 60%, var(--card)); }
-    .materia[data-categoria="Electrónica"]         { background: color-mix(in srgb, #ffd6a5 60%, var(--card)); }
-    .materia[data-categoria="Software"]            { background: color-mix(in srgb, #caffbf 60%, var(--card)); }
-    .materia[data-categoria="Telecomunicaciones"]  { background: color-mix(in srgb, #b5ead7 60%, var(--card)); }
-    .materia[data-categoria="Titulación"]          { background: color-mix(in srgb, #fdffb6 60%, var(--card)); }
-    .materia[data-categoria="Énfasis y Electivas"] { background: color-mix(in srgb, #e0c3fc 60%, var(--card)); }
-
-    .materia .numero, .materia .codigo, .materia .creditos {
-      position: absolute;
-      font-size: 0.7rem;
-      font-weight: bold;
-      background: rgba(255,255,255,0.7);
-      padding: 2px 6px;
-      border-radius: 4px;
-      z-index: 2;
-    }
-    .materia .numero { top: 4px; left: 4px; }
-    .materia .codigo { top: 4px; right: 4px; }
-    .materia .creditos { bottom: 4px; right: 4px; }
-
-    .materia span {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      display: block;
-    }
-
-    .materia[data-aprobada="true"]::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 141%; height: 2px;
-      background-color: var(--text);
-      transform: rotate(45deg);
-      transform-origin: top left;
-      z-index: 3;
     }
 
     .materia[data-bloqueada="true"]::before {
       content: "";
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(255,255,255,0.6);
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 3;
+      border-radius: 8px;
+    }
+
+    .materia[data-aprobada="true"]::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 141%;
+      height: 2px;
+      background-color: #0f172a;
+      transform: rotate(45deg);
+      transform-origin: top left;
+      z-index: 4;
+    }
+
+    .codigo, .numero, .creditos {
+      position: absolute;
+      font-size: 0.7rem;
+      font-weight: bold;
+      background: #3b82f6;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      z-index: 4;
+    }
+
+    .codigo { top: 4px; left: 4px; }
+    .numero { top: 4px; right: 4px; }
+    .creditos { bottom: 4px; right: 4px; }
+
+    .nombre {
+      text-align: center;
       z-index: 2;
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     @media (prefers-color-scheme: dark) {
-      .materia .numero,
-      .materia .codigo,
-      .materia .creditos {
-        background: rgba(0,0,0,0.6);
+      body {
+        background: #121212;
+        color: #e0e0e0;
       }
-      .materia[data-bloqueada="true"]::before {
-        background: rgba(0,0,0,0.6);
+
+      .semestre {
+        background: #1e1e1e;
+      }
+
+      .materia {
+        background: #1d4ed8;
+      }
+
+      .codigo, .numero, .creditos {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+      }
+
+      .nombre {
+        color: #fff;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Editable - Ingeniería Electrónica y Telecomunicaciones</h1>
-  <div class="grid" id="contenedor"></div>
+  <h1>Malla Interactiva - Ingeniería Electrónica y Telecomunicaciones</h1>
+  <div id="malla" class="grid"></div>
 
   <script>
     fetch('materias.json')
       .then(res => res.json())
       .then(data => {
-        const materias = data.map((m, i) => ({
+        const materias = data.map((arr, i) => ({
           numero: i + 1,
-          codigo: m[0],
-          nombre: m[1],
-          creditos: m[2],
-          categoria: m[3],
-          semestre: m[4],
-          prerequisitos: m[5] || []
+          codigo: arr[0],
+          nombre: arr[1],
+          creditos: arr[2],
+          area: arr[3],
+          semestre: arr[4],
+          prerequisitos: arr[5] || []
         }));
+        renderizarMalla(materias);
+      });
 
-        const materiasPorSemestre = {};
-        materias.forEach(m => {
-          if (!materiasPorSemestre[m.semestre]) materiasPorSemestre[m.semestre] = [];
-          materiasPorSemestre[m.semestre].push(m);
+    function renderizarMalla(materias) {
+      const contenedor = document.getElementById('malla');
+      const porSemestre = {};
+      materias.forEach(m => {
+        const sem = Number(m.semestre);
+        if (!porSemestre[sem]) porSemestre[sem] = [];
+        porSemestre[sem].push(m);
+      });
+
+      const ordenados = Object.keys(porSemestre).map(Number).sort((a, b) => a - b);
+      ordenados.forEach(sem => {
+        const col = document.createElement('div');
+        col.className = 'semestre';
+        col.innerHTML = `<h3>Semestre ${sem}</h3>`;
+
+        porSemestre[sem].forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'materia';
+          div.dataset.nombre = m.nombre;
+          if (m.prerequisitos.length) div.dataset.bloqueada = true;
+
+          div.innerHTML = `
+            <div class="codigo">${m.codigo}</div>
+            <div class="numero">${m.numero}</div>
+            <div class="creditos">${m.creditos}</div>
+            <div class="nombre">${m.nombre}</div>
+          `;
+
+          div.addEventListener('click', () => alternarEstado(m, div, materias));
+          col.appendChild(div);
         });
 
-        const contenedor = document.getElementById('contenedor');
-        for (const semestre in materiasPorSemestre) {
-          const columna = document.createElement('div');
-          columna.className = 'semestre';
-          const titulo = document.createElement('h3');
-          titulo.textContent = `Semestre ${semestre}`;
-          columna.appendChild(titulo);
-
-          materiasPorSemestre[semestre].forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'materia';
-            div.dataset.categoria = m.categoria;
-            div.dataset.nombre = m.nombre;
-            div.innerHTML = `
-              <div class="numero">${m.numero}</div>
-              <div class="codigo">${m.codigo}</div>
-              <div class="creditos">${m.creditos}</div>
-              <span class="contenido">${m.nombre}</span>
-            `;
-            if (m.prerequisitos.length > 0) {
-              div.dataset.bloqueada = true;
-            }
-            div.addEventListener('click', () => alternarEstado(m, div));
-            columna.appendChild(div);
-          });
-
-          contenedor.appendChild(columna);
-        }
-
-        function alternarEstado(materia, elemento) {
-          if (elemento.dataset.bloqueada === 'true') return;
-          const yaAprobada = elemento.dataset.aprobada === 'true';
-          if (yaAprobada) {
-            delete elemento.dataset.aprobada;
-            volverABloquearDependientes(materia.nombre);
-          } else {
-            elemento.dataset.aprobada = true;
-            desbloquearMaterias(materia.nombre);
-          }
-        }
-
-        function desbloquearMaterias(nombreAprobado) {
-          document.querySelectorAll('[data-bloqueada="true"]').forEach(el => {
-            const mat = materias.find(m => m.nombre === el.dataset.nombre);
-            if (mat && mat.prerequisitos.every(pr => estaAprobada(pr))) {
-              el.dataset.bloqueada = false;
-            }
-          });
-        }
-
-        function volverABloquearDependientes(nombreDesmarcado) {
-          document.querySelectorAll('.materia').forEach(el => {
-            const mat = materias.find(m => m.nombre === el.dataset.nombre);
-            if (mat && mat.prerequisitos.includes(nombreDesmarcado)) {
-              el.dataset.bloqueada = true;
-              delete el.dataset.aprobada;
-              volverABloquearDependientes(mat.nombre);
-            }
-          });
-        }
-
-        function estaAprobada(nombre) {
-          const el = document.querySelector(`.materia[data-nombre="${nombre}"]`);
-          return el && el.dataset.aprobada === 'true';
-        }
-      })
-      .catch(err => {
-        console.error('Error al cargar materias.json:', err);
-        document.getElementById('contenedor').innerHTML = '<p>Error al cargar las materias.</p>';
+        contenedor.appendChild(col);
       });
+    }
+
+    function alternarEstado(materia, el, todas) {
+      if (el.dataset.bloqueada === 'true') return;
+
+      const aprobada = el.dataset.aprobada === 'true';
+      if (aprobada) {
+        delete el.dataset.aprobada;
+        bloquearDependientes(materia, todas);
+      } else {
+        el.dataset.aprobada = true;
+        desbloquearDependientes(materia, todas);
+      }
+    }
+
+    function desbloquearDependientes(aprobada, materias) {
+      materias.forEach(m => {
+        if (m.prerequisitos.includes(aprobada.nombre)) {
+          const matEl = document.querySelector(`.materia[data-nombre='${m.nombre}']`);
+          const listos = m.prerequisitos.every(pr => {
+            const el = document.querySelector(`.materia[data-nombre='${pr}']`);
+            return el && el.dataset.aprobada === 'true';
+          });
+          if (listos) delete matEl.dataset.bloqueada;
+        }
+      });
+    }
+
+    function bloquearDependientes(removida, materias) {
+      materias.forEach(m => {
+        if (m.prerequisitos.includes(removida.nombre)) {
+          const matEl = document.querySelector(`.materia[data-nombre='${m.nombre}']`);
+          matEl.dataset.bloqueada = true;
+          delete matEl.dataset.aprobada;
+          bloquearDependientes(m, materias);
+        }
+      });
+    }
   </script>
 </body>
 </html>
